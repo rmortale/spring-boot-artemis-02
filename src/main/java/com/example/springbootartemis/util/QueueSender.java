@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QueueSender {
 
+    private static final String COMPONENT_NAME = "artemis-forwarder";
     private static final String routingQueue = "queue.to.routing.01";
     private static final String trackingQueue = "queue.to.tracking.01";
     private static final String errorQueue = "queue.to.error.01";
     public static final String SOURCE_UID_KEY = "vt_srcUid";
+    public static final String COMPONENT_NAME_KEY = "vt_componentName";
     public static final String ERROR_MSG_KEY = "vt_errorMessage";
     private final JmsTemplate template;
 
@@ -28,6 +30,7 @@ public class QueueSender {
     private void sendMessage(String queue, String payload, String sourceUid, String errorMsg) {
         template.convertAndSend(queue, payload, m -> {
             m.setStringProperty(SOURCE_UID_KEY, sourceUid);
+            m.setStringProperty(COMPONENT_NAME_KEY, COMPONENT_NAME);
             if (errorMsg != null) {
                 m.setStringProperty(ERROR_MSG_KEY, errorMsg);
             }

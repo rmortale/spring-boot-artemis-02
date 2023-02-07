@@ -10,6 +10,8 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 
 import static com.example.springbootartemis.util.QueueSender.SOURCE_UID_KEY;
@@ -25,8 +27,9 @@ public class JmsConsumer {
     @JmsListener(destination = "fromQueue1")
     @JmsListener(destination = "fromQueue2")
     public void processMessage(Message<String> message) {
+        Instant start = Instant.now();
         String payload = message.getPayload();
-        log.info("message payload {}", payload);
+        //log.info("message payload {}", payload);
         String sourceUid = createSourceUid(message);
         VaiHeader header = null;
         try {
@@ -35,6 +38,7 @@ public class JmsConsumer {
 
             // query routing info here and add to properties
             sender.sendToRouting(payload, sourceUid);
+            log.info("Sucessfully forwarded message. duration={}ms", Duration.between(start, Instant.now()).toMillis());
         } catch (XMLStreamException e) {
             log.warn("invalid message payload, sent to error processor!", e);
             sender.sendToError(payload, sourceUid, e.getMessage());
