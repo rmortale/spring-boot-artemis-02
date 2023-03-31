@@ -1,34 +1,25 @@
 package com.example.springbootartemis.util;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.StringReader;
-import java.util.Objects;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StaxMessageUtil {
 
     private final XMLInputFactory xmlInputFactory;
 
-    public StaxMessageUtil() {
-        xmlInputFactory = XMLInputFactory.newInstance();
-        // https://rules.sonarsource.com/java/RSPEC-2755
-        // prevent xxe
-        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-    }
-
     public VaiHeader parseVaiHeader(String message) throws XMLStreamException {
-        Objects.requireNonNull(message, "message can not be null!");
-        if (message.isBlank()) {
-            throw new XMLStreamException("message can not be blank!");
+        if (isBlankString(message)) {
+            throw new XMLStreamException("Message can not be null or blank!");
         }
 
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(message));
@@ -76,5 +67,9 @@ public class StaxMessageUtil {
             }
         }
         return header;
+    }
+
+    private boolean isBlankString(String string) {
+        return string == null || string.isBlank();
     }
 }

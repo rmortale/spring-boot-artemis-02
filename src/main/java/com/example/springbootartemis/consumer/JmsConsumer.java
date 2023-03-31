@@ -24,7 +24,7 @@ public class JmsConsumer {
     private final StaxMessageUtil messageUtil;
     private final QueueSender sender;
 
-    @JmsListener(destination = "fromQueue1")
+    @JmsListener(destination = "vai.test.queue.01")
     @JmsListener(destination = "fromQueue2")
     public void processMessage(Message<String> message) {
         Instant start = Instant.now();

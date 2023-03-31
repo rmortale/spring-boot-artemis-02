@@ -3,6 +3,7 @@ package com.example.springbootartemis.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,19 +28,19 @@ public class MessageUtilTest {
             "        <bio><![CDATA[a & b]]></bio>\n" +
             "    </staff>\n" +
             "</Company>";
-    StaxMessageUtil sut = new StaxMessageUtil();
+    StaxMessageUtil sut = new StaxMessageUtil(XMLInputFactory.newInstance());
 
     @Test
     public void testEmptyObject() {
         XMLStreamException thrown = Assertions.assertThrows(XMLStreamException.class, () -> {
             VaiHeader vaiHeader = sut.parseVaiHeader("");
         });
-        Assertions.assertEquals("message can not be blank!", thrown.getMessage());
+        Assertions.assertEquals("Message can not be null or blank!", thrown.getMessage());
 
-        NullPointerException npe = Assertions.assertThrows(NullPointerException.class, () -> {
+        XMLStreamException npe = Assertions.assertThrows(XMLStreamException.class, () -> {
             VaiHeader vaiHeader = sut.parseVaiHeader(null);
         });
-        Assertions.assertEquals("message can not be null!", npe.getMessage());
+        Assertions.assertEquals("Message can not be null or blank!", npe.getMessage());
     }
 
     @Test
