@@ -38,7 +38,7 @@ public class JmsConsumer {
 
             // query routing info here and add to properties
             sender.sendToRouting(payload, sourceUid);
-            log.info("Sucessfully forwarded message. duration={}ms", Duration.between(start, Instant.now()).toMillis());
+            log.info("Successfully forwarded message. duration={}ms", Duration.between(start, Instant.now()).toMillis());
         } catch (XMLStreamException e) {
             log.warn("invalid message payload, sent to error processor!", e);
             sender.sendToError(payload, sourceUid, e.getMessage());
